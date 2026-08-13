@@ -152,6 +152,7 @@ const Search = {
 
   groupLabel(type) {
     if (type === 'framework') return '📁 Frameworks';
+    if (type === 'image') return '🖼️ Sales Images';
     if (type === 'presentation:interview') return '🎤 Interview Presentations';
     if (type === 'presentation:client') return '🤝 Client Presentations';
     if (type.startsWith('interview:')) return `🎤 Interview — ${type.replace('interview:', '')}`;
@@ -162,6 +163,7 @@ const Search = {
 
   resultIcon(item) {
     if (item.type === 'framework') return Utils.typeIcon(item.file_type || 'document');
+    if (item.type === 'image') return '🖼️';
     if (item.type.startsWith('interview')) return '🎤';
     if (item.type.startsWith('presentation')) return '📊';
     return '📝';
@@ -173,6 +175,9 @@ const Search = {
     if (item.type === 'framework') {
       App.navigate('frameworks');
       if (item.file_path) setTimeout(() => window.open(item.file_path, '_blank'), 500);
+    } else if (item.type === 'image') {
+      App.navigate('images');
+      setTimeout(() => SalesImages.openPreview(item.id), 400);
     } else if (item.type.startsWith('interview')) {
       App.navigate('interview');
     } else if (item.type.startsWith('presentation')) {

@@ -21,6 +21,7 @@ const App = {
     // Trigger page load
     if (page === 'frameworks') Frameworks.load();
     if (page === 'presentations') Presentations.load();
+    if (page === 'images') SalesImages.load();
     if (page === 'interview') Interview.load();
     if (page === 'core-sales') CoreSales.load();
     if (page === 'home') Home.loadStats();
@@ -86,8 +87,21 @@ const Modal = {
     document.body.style.overflow = 'hidden';
   },
   close(id) {
-    document.getElementById(id).classList.remove('visible');
+    const el = document.getElementById(id);
+    if (el) {
+      el.classList.remove('visible');
+      el.classList.remove('fullscreen-mode');
+    }
     document.body.style.overflow = '';
+  },
+  toggleFullscreen(id = 'preview-modal') {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (el.classList.contains('fullscreen-mode')) {
+      el.classList.remove('fullscreen-mode');
+    } else {
+      el.classList.add('fullscreen-mode');
+    }
   },
 };
 
@@ -171,10 +185,12 @@ const Home = {
       const s = data.data;
       if (document.getElementById('stat-frameworks')) document.getElementById('stat-frameworks').textContent = `${s.frameworks} items`;
       if (document.getElementById('stat-presentations')) document.getElementById('stat-presentations').textContent = `${s.presentations} items`;
+      if (document.getElementById('stat-images')) document.getElementById('stat-images').textContent = `${s.images || 0} items`;
       if (document.getElementById('stat-interview')) document.getElementById('stat-interview').textContent = `${s.interviewEntries || 0} items`;
       if (document.getElementById('stat-entries')) document.getElementById('stat-entries').textContent = `${s.entries} entries`;
       if (document.getElementById('stat-frameworks-big')) document.getElementById('stat-frameworks-big').textContent = s.frameworks;
       if (document.getElementById('stat-presentations-big')) document.getElementById('stat-presentations-big').textContent = s.presentations;
+      if (document.getElementById('stat-images-big')) document.getElementById('stat-images-big').textContent = s.images || 0;
       if (document.getElementById('stat-interview-big')) document.getElementById('stat-interview-big').textContent = s.interviewEntries || 0;
       if (document.getElementById('stat-entries-big')) document.getElementById('stat-entries-big').textContent = s.entries;
     } catch {}
@@ -190,11 +206,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Close modals on backdrop click
   document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
     backdrop.addEventListener('click', (e) => {
-      if (e.target === backdrop) backdrop.classList.remove('visible');
+      if (e.target === backdrop) Modal.close(backdrop.id);
     });
   });
 
-  // Global keyboard shortcut ⌘K
+  // Global keyboard shortcut ⌘K and Escape
   document.addEventListener('keydown', (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
       e.preventDefault();
@@ -202,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => document.getElementById('main-search')?.focus(), 200);
     }
     if (e.key === 'Escape') {
-      document.querySelectorAll('.modal-backdrop.visible').forEach(m => m.classList.remove('visible'));
+      document.querySelectorAll('.modal-backdrop.visible').forEach(m => Modal.close(m.id));
       document.body.style.overflow = '';
     }
   });
@@ -229,6 +245,11 @@ document.addEventListener('DOMContentLoaded', () => {
   setupUploadZone('pres-upload-zone', 'pres-file-input', 'pres-upload-progress', 'pres-progress-fill', 'pres-upload-preview', (d) => {
     document.getElementById('pres-file-path').value = d.file_path;
     document.getElementById('pres-original-filename').value = d.original_filename;
+  });
+
+  setupUploadZone('img-upload-zone', 'img-file-input', 'img-upload-progress', 'img-progress-fill', 'img-upload-preview', (d) => {
+    document.getElementById('img-file-path').value = d.file_path;
+    document.getElementById('img-original-filename').value = d.original_filename;
   });
 
   setupUploadZone('cs-upload-zone', 'cs-file-input', 'cs-upload-progress', 'cs-progress-fill', 'cs-upload-preview', (d) => {

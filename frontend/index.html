@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SalesOS — Your Personal Sales Platform</title>
-  <meta name="description" content="A powerful personal sales intelligence platform to organize frameworks, presentations, interview prep, and sales knowledge.">
+  <meta name="description" content="A powerful personal sales intelligence platform to organize frameworks, presentations, images, interview prep, and sales knowledge.">
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
 </head>
@@ -25,6 +25,9 @@
         </button>
         <button class="nav-tab" data-page="presentations" onclick="App.navigate('presentations')">
           <span class="tab-icon">📊</span> Presentations
+        </button>
+        <button class="nav-tab" data-page="images" onclick="App.navigate('images')">
+          <span class="tab-icon">🖼️</span> Images
         </button>
         <button class="nav-tab" data-page="interview" onclick="App.navigate('interview')">
           <span class="tab-icon">🎤</span> Interview
@@ -47,7 +50,7 @@
       <div class="home-hero">
         <div class="home-tagline">Your Personal Sales Intelligence</div>
         <h1 class="home-title">Everything You Need<br>To Close More Deals</h1>
-        <p class="home-subtitle">Search across frameworks, presentations, interview prep, and sales knowledge</p>
+        <p class="home-subtitle">Search across frameworks, presentations, images, interview prep, and sales knowledge</p>
 
         <div class="search-container" id="search-container">
           <div class="search-bar">
@@ -56,11 +59,11 @@
               type="text"
               class="search-input"
               id="main-search"
-              placeholder="Search or type / for commands (e.g., /interview/script)..."
+              placeholder="Search or type / for commands (e.g., /image, /interview/script)..."
               autocomplete="off"
               spellcheck="false"
             >
-            <span class="search-shortcut">Try /interview/script, /objection</span>
+            <span class="search-shortcut">Try /image, /interview/script</span>
           </div>
           <div class="search-dropdown" id="search-dropdown"></div>
         </div>
@@ -78,6 +81,11 @@
               <div class="quick-card-label">Presentations</div>
               <div class="quick-card-count" id="stat-presentations">— items</div>
             </div>
+            <div class="quick-card" onclick="App.navigate('images')">
+              <div class="quick-card-icon">🖼️</div>
+              <div class="quick-card-label">Images</div>
+              <div class="quick-card-count" id="stat-images">— items</div>
+            </div>
             <div class="quick-card" onclick="App.navigate('interview')">
               <div class="quick-card-icon">🎤</div>
               <div class="quick-card-label">Interview</div>
@@ -87,11 +95,6 @@
               <div class="quick-card-icon">⚡</div>
               <div class="quick-card-label">Core Sales</div>
               <div class="quick-card-count" id="stat-entries">— entries</div>
-            </div>
-            <div class="quick-card" onclick="App.navigate('core-sales'); setTimeout(()=>CoreSales.openAddEntry(),400)">
-              <div class="quick-card-icon">✍️</div>
-              <div class="quick-card-label">Add Entry</div>
-              <div class="quick-card-count">Quick add</div>
             </div>
           </div>
         </div>
@@ -105,6 +108,11 @@
           <div class="stat-item">
             <div class="stat-value" id="stat-presentations-big">0</div>
             <div class="stat-label">Presentations</div>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <div class="stat-value" id="stat-images-big">0</div>
+            <div class="stat-label">Images</div>
           </div>
           <div class="stat-divider"></div>
           <div class="stat-item">
@@ -159,7 +167,7 @@
       <div class="page-header">
         <div class="page-header-left">
           <h1 class="page-title">📊 Presentations</h1>
-          <p class="page-subtitle">Client pitch decks and sales presentations</p>
+          <p class="page-subtitle">Client pitch decks and sales presentations with built-in viewer</p>
         </div>
         <div class="page-actions">
           <button class="btn btn-primary" onclick="Presentations.openAddModal()">
@@ -177,6 +185,26 @@
       </div>
       <div class="pres-content">
         <div class="items-grid" id="presentations-grid">
+          <div class="loading-overlay"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── IMAGES GALLERY PAGE ── -->
+    <section class="page-content" id="page-images">
+      <div class="page-header">
+        <div class="page-header-left">
+          <h1 class="page-title">🖼️ Sales Images</h1>
+          <p class="page-subtitle">Visual assets, sales diagrams, infographics, and playbooks</p>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-primary" onclick="SalesImages.openAddModal()">
+            + Add Image
+          </button>
+        </div>
+      </div>
+      <div class="grid-container" style="padding-top:24px">
+        <div class="items-grid" id="images-grid">
           <div class="loading-overlay"><div class="spinner"></div></div>
         </div>
       </div>
@@ -231,6 +259,50 @@
     </section>
 
     <!-- ── MODALS ── -->
+
+    <!-- Sales Image Modal -->
+    <div class="modal-backdrop" id="img-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 class="modal-title" id="img-modal-title">Add Sales Image</h2>
+          <button class="modal-close" onclick="SalesImages.closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Title *</label>
+            <input type="text" class="form-input" id="img-title" placeholder="e.g., Enterprise Sales Architecture Diagram">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <input type="text" class="form-input" id="img-desc" placeholder="Brief description of this visual asset...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Image File *</label>
+            <div class="upload-zone" id="img-upload-zone" onclick="document.getElementById('img-file-input').click()">
+              <div class="upload-zone-icon">🖼️</div>
+              <div class="upload-zone-text">Click to upload image or drag & drop</div>
+              <div class="upload-zone-sub">PNG, JPG, WEBP, GIF, SVG up to 50MB</div>
+            </div>
+            <input type="file" id="img-file-input" style="display:none" accept=".png,.jpg,.jpeg,.gif,.webp,.svg">
+            <div class="upload-progress" id="img-upload-progress">
+              <div class="progress-bar"><div class="progress-fill" id="img-progress-fill" style="width:0%"></div></div>
+            </div>
+            <div class="upload-preview" id="img-upload-preview" style="display:none"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tags (comma separated for easy search)</label>
+            <input type="text" class="form-input" id="img-tags" placeholder="e.g., diagram, architecture, funnel, infographic">
+          </div>
+          <input type="hidden" id="img-file-path">
+          <input type="hidden" id="img-original-filename">
+          <input type="hidden" id="img-edit-id">
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="SalesImages.closeModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="SalesImages.save()">Save Image</button>
+        </div>
+      </div>
+    </div>
 
     <!-- Framework Modal -->
     <div class="modal-backdrop" id="fw-modal">
@@ -341,7 +413,7 @@
       </div>
     </div>
 
-    <!-- Core Sales Entry Modal (With File & Link Attachment Options) -->
+    <!-- Core Sales Entry Modal -->
     <div class="modal-backdrop" id="cs-modal">
       <div class="modal">
         <div class="modal-header">
@@ -519,15 +591,17 @@
 
     <!-- Generic Item Preview Modal -->
     <div class="modal-backdrop" id="preview-modal">
-      <div class="modal" style="max-width: 680px;">
+      <div class="modal" style="max-width: 720px;">
         <div class="modal-header">
           <h2 class="modal-title" id="preview-modal-title">Item Preview</h2>
+          <button class="btn btn-ghost btn-sm" style="margin-left:auto;margin-right:8px" onclick="Modal.toggleFullscreen()">🖥️ Present Mode</button>
           <button class="modal-close" onclick="Modal.close('preview-modal')">✕</button>
         </div>
         <div class="modal-body" id="preview-modal-body">
           <!-- Dynamic preview content inserted here -->
         </div>
         <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="Modal.toggleFullscreen()">🖥️ Present Mode</button>
           <button class="btn btn-primary" onclick="Modal.close('preview-modal')">Done</button>
         </div>
       </div>
@@ -542,6 +616,7 @@
   <script src="/js/search.js"></script>
   <script src="/js/frameworks.js"></script>
   <script src="/js/presentations.js"></script>
+  <script src="/js/images.js"></script>
   <script src="/js/interview.js"></script>
   <script src="/js/core-sales.js"></script>
 </body>

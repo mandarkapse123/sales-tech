@@ -51,6 +51,18 @@ db.exec(`
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
+  -- Sales Images Table
+  CREATE TABLE IF NOT EXISTS sales_images (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT,
+    file_path TEXT NOT NULL,
+    original_filename TEXT,
+    tags TEXT DEFAULT '[]',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+
   -- Core Sales Tabs
   CREATE TABLE IF NOT EXISTS core_sales_tabs (
     id TEXT PRIMARY KEY,

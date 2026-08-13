@@ -457,7 +457,28 @@ body::before {
   transition: transform var(--transition-base);
   overflow: hidden;
 }
-.modal-backdrop.visible .modal { transform: translateY(0) scale(1); }
+.modal-backdrop.fullscreen-mode .modal {
+  max-width: 100vw !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  border-radius: 0 !important;
+  border: none !important;
+  margin: 0 !important;
+  display: flex;
+  flex-direction: column;
+  background: #000 !important;
+}
+.modal-backdrop.fullscreen-mode .modal-body {
+  max-height: calc(100vh - 120px) !important;
+  flex: 1;
+}
+.modal-backdrop.fullscreen-mode iframe {
+  height: calc(100vh - 160px) !important;
+}
+.modal-backdrop.fullscreen-mode img {
+  max-height: calc(100vh - 180px) !important;
+}
 .modal-header {
   padding: 20px 24px;
   border-bottom: 1px solid var(--border-subtle);

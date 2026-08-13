@@ -95,6 +95,7 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 // ── Routes ──
 app.use('/api/frameworks', require('./routes/frameworks'));
 app.use('/api/presentations', require('./routes/presentations'));
+app.use('/api/images', require('./routes/images'));
 app.use('/api/core-sales', require('./routes/core-sales'));
 app.use('/api/interview', require('./routes/interview'));
 app.use('/api/search', require('./routes/search'));
@@ -109,11 +110,12 @@ app.get('/api/stats', (req, res) => {
   try {
     const frameworks = db.prepare('SELECT COUNT(*) as count FROM frameworks').get().count;
     const presentations = db.prepare('SELECT COUNT(*) as count FROM presentations').get().count;
+    const images = db.prepare('SELECT COUNT(*) as count FROM sales_images').get().count;
     const tabs = db.prepare('SELECT COUNT(*) as count FROM core_sales_tabs').get().count;
     const entries = db.prepare('SELECT COUNT(*) as count FROM core_sales_entries').get().count;
     const interviewTabs = db.prepare('SELECT COUNT(*) as count FROM interview_tabs').get().count;
     const interviewEntries = db.prepare('SELECT COUNT(*) as count FROM interview_entries').get().count;
-    res.json({ success: true, data: { frameworks, presentations, tabs, entries, interviewTabs, interviewEntries } });
+    res.json({ success: true, data: { frameworks, presentations, images, tabs, entries, interviewTabs, interviewEntries } });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
 
     if (!q) return res.json({ success: true, data: [], query: q });
 
-    // Parse slash command: /framework, /presentation, /interview, /interview/script, /sales, /objection, etc.
+    // Parse slash command: /framework, /presentation, /image, /interview, /interview/script, /sales, /objection, etc.
     let filterType = null;
     let searchTerm = q;
 
@@ -24,6 +24,8 @@ router.get('/', (req, res) => {
         'frameworks': 'framework',
         'presentation': 'presentation',
         'presentations': 'presentation',
+        'image': 'image',
+        'images': 'image',
         'interview': 'interview',
         'interview/presentations': 'interview:Presentations',
         'interview/script': 'interview:Script',
@@ -92,6 +94,9 @@ router.get('/', (req, res) => {
       if (r.source_type === 'framework') {
         const fw = db.prepare('SELECT type, file_path FROM frameworks WHERE id = ?').get(r.source_id);
         extra = fw || {};
+      } else if (r.source_type === 'image') {
+        const img = db.prepare('SELECT file_path FROM sales_images WHERE id = ?').get(r.source_id);
+        extra = { type: 'image', file_path: img ? img.file_path : null };
       } else if (r.source_type.startsWith('presentation')) {
         const p = db.prepare('SELECT category, file_path FROM presentations WHERE id = ?').get(r.source_id);
         extra = p || {};
@@ -123,6 +128,7 @@ router.get('/commands', (req, res) => {
   const commands = [
     { cmd: '/framework', label: 'Frameworks', icon: '📁', description: 'Browse all frameworks' },
     { cmd: '/presentation', label: 'Presentations', icon: '📊', description: 'All presentations' },
+    { cmd: '/image', label: 'Images', icon: '🖼️', description: 'Visual assets & infographics' },
     { cmd: '/interview', label: 'Interview Main', icon: '🎤', description: 'All interview resources' },
     { cmd: '/interview/presentations', label: 'Interview Decks', icon: '🎤', description: 'Interview presentations' },
     { cmd: '/interview/script', label: 'Interview Scripts', icon: '📜', description: 'Scripts & pitch notes' },
