@@ -594,7 +594,10 @@
       <div class="modal" style="max-width: 720px;">
         <div class="modal-header">
           <h2 class="modal-title" id="preview-modal-title">Item Preview</h2>
-          <button class="btn btn-ghost btn-sm" style="margin-left:auto;margin-right:8px" onclick="Modal.toggleFullscreen()">🖥️ Present Mode</button>
+          <div style="margin-left:auto;margin-right:8px;display:flex;gap:6px">
+            <button class="btn btn-secondary btn-sm" onclick="Modal.toggleFullscreen()">🖥️ Present Mode</button>
+            <button class="btn btn-ghost btn-sm" onclick="Modal.requestBrowserFullscreen()">↗ Fullscreen</button>
+          </div>
           <button class="modal-close" onclick="Modal.close('preview-modal')">✕</button>
         </div>
         <div class="modal-body" id="preview-modal-body">
@@ -602,6 +605,7 @@
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" onclick="Modal.toggleFullscreen()">🖥️ Present Mode</button>
+          <button class="btn btn-ghost" onclick="Modal.requestBrowserFullscreen()">↗ Fullscreen</button>
           <button class="btn btn-primary" onclick="Modal.close('preview-modal')">Done</button>
         </div>
       </div>

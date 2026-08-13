@@ -103,6 +103,13 @@ const Modal = {
       el.classList.add('fullscreen-mode');
     }
   },
+  requestBrowserFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+    }
+  },
 };
 
 /* ─── Utility Helpers ─── */

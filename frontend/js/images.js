@@ -33,8 +33,8 @@ const SalesImages = {
   renderCard(item) {
     return `
       <div class="item-card" onclick="SalesImages.openPreview('${item.id}')">
-        <div class="item-card-thumb" style="height:180px;cursor:pointer">
-          <img src="${item.file_path}" alt="${item.title}" loading="lazy" style="width:100%;height:100%;object-fit:cover">
+        <div class="item-card-thumb" style="height:150px;cursor:pointer;background:transparent">
+          <img src="${item.file_path}" alt="${item.title}" loading="lazy" style="width:100%;height:100%;object-fit:contain">
           <div class="type-overlay type-image">🖼️ IMAGE</div>
         </div>
         <div class="item-card-body">
@@ -44,8 +44,8 @@ const SalesImages = {
           <div class="item-card-footer">
             <span class="item-card-date">${Utils.formatDate(item.created_at)}</span>
             <div class="item-card-actions" onclick="event.stopPropagation()">
-              <button class="item-card-action" title="Present / Fullscreen Mode" onclick="SalesImages.openPreview('${item.id}')">🖥️</button>
-              <button class="item-card-action" title="Open Image in New Tab" onclick="window.open('${item.file_path}', '_blank')">↗</button>
+              <button class="item-card-action" title="Present Mode" onclick="SalesImages.openPreview('${item.id}')">🖥️</button>
+              <button class="item-card-action" title="Open Fullscreen in New Tab" onclick="window.open('${item.file_path}', '_blank')">↗</button>
               <button class="item-card-action" title="Edit" onclick="SalesImages.openEditModal('${item.id}')">✏️</button>
               <button class="item-card-action delete" title="Delete" onclick="SalesImages.delete('${item.id}', '${item.title.replace(/'/g, "\\'")}')">🗑</button>
             </div>
@@ -63,22 +63,25 @@ const SalesImages = {
 
     const modalBody = document.getElementById('preview-modal-body');
     modalBody.innerHTML = `
-      <div class="preview-meta-row">
+      <div class="preview-meta-row" style="width:100%">
         <span class="type-overlay type-image" style="position:static">🖼️ IMAGE ASSET</span>
         <span style="font-size:12px;color:var(--text-muted)">Created: ${Utils.formatDate(item.created_at)}</span>
-        <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="Modal.toggleFullscreen()">🖥️ Present Mode</button>
+        <div style="margin-left:auto;display:flex;gap:8px">
+          <button class="btn btn-secondary btn-sm" onclick="Modal.toggleFullscreen()">🖥️ Present Mode</button>
+          <button class="btn btn-ghost btn-sm" onclick="Modal.requestBrowserFullscreen()">↗ Fullscreen</button>
+        </div>
       </div>
-      <div style="max-height:500px;border-radius:var(--radius-md);overflow:hidden;background:var(--bg-elevated);text-align:center;display:flex;align-items:center;justify-content:center;padding:10px">
-        <img src="${item.file_path}" alt="${item.title}" style="max-width:100%;max-height:480px;object-fit:contain;border-radius:var(--radius-sm)">
+      <div class="image-preview-container" style="width:100%;max-height:560px;display:flex;align-items:center;justify-content:center;padding:8px">
+        <img src="${item.file_path}" alt="${item.title}" style="max-width:100%;max-height:520px;object-fit:contain;border-radius:var(--radius-md)">
       </div>
       ${item.description ? `
-        <div style="margin-top:16px">
+        <div style="margin-top:12px;width:100%">
           <div class="form-label" style="margin-bottom:4px;font-weight:600">Description:</div>
           <div class="preview-content-box">${(item.description || '').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</div>
         </div>
       ` : ''}
       ${item.tags && item.tags.length ? `
-        <div style="margin-top:12px">
+        <div style="margin-top:10px;width:100%">
           <div class="form-label" style="margin-bottom:4px">Tags:</div>
           ${Utils.renderTags(item.tags)}
         </div>

@@ -67,7 +67,6 @@ const upload = multer({
 app.post('/api/upload', upload.single('file'), (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ success: false, error: 'No file uploaded' });
-    const fileUrl = `/uploads/${req.file.filename}`;
     
     // Auto-detect type
     const mime = req.file.mimetype;
@@ -77,6 +76,15 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
     else if (mime.includes('sheet') || mime.includes('excel') || mime === 'text/csv') type = 'sheet';
     else if (mime.includes('presentation') || mime.includes('powerpoint')) type = 'document';
     else if (mime.includes('word') || mime.includes('text')) type = 'document';
+
+    // Store images and serverless files as Data URLs so they persist permanently in SQLite across all devices
+    let fileUrl = `/uploads/${req.file.filename}`;
+    if ((mime.startsWith('image/') || process.env.VERCEL) && req.file.size <= 15 * 1024 * 1024) {
+      try {
+        const fileData = fs.readFileSync(req.file.path);
+        fileUrl = `data:${mime};base64,${fileData.toString('base64')}`;
+      } catch (e) {}
+    }
 
     res.json({
       success: true,
