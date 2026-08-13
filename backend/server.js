@@ -19,8 +19,8 @@ if (!fs.existsSync(UPLOADS_DIR)) {
 
 // ── Middleware ──
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Serve uploaded files with Content-Disposition: inline header
 app.use('/uploads', express.static(UPLOADS_DIR, {
@@ -77,9 +77,9 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
     else if (mime.includes('presentation') || mime.includes('powerpoint')) type = 'document';
     else if (mime.includes('word') || mime.includes('text')) type = 'document';
 
-    // Store images and serverless files as Data URLs so they persist permanently in SQLite across all devices
+    // Store images as Data URLs up to 3.5MB so they fit Vercel payload limits and persist permanently in SQLite
     let fileUrl = `/uploads/${req.file.filename}`;
-    if ((mime.startsWith('image/') || process.env.VERCEL) && req.file.size <= 15 * 1024 * 1024) {
+    if (mime.startsWith('image/') && req.file.size <= 3.5 * 1024 * 1024) {
       try {
         const fileData = fs.readFileSync(req.file.path);
         fileUrl = `data:${mime};base64,${fileData.toString('base64')}`;
