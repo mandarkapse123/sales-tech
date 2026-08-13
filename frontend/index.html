@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SalesOS — Your Personal Sales Platform</title>
+  <meta name="description" content="A powerful personal sales intelligence platform to organize frameworks, presentations, interview prep, and sales knowledge.">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body>
+  <div id="app">
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+      <div class="navbar-logo">
+        <span class="logo-icon">⚡</span>
+        SalesOS
+      </div>
+      <div class="navbar-tabs">
+        <button class="nav-tab active" data-page="home" onclick="App.navigate('home')">
+          <span class="tab-icon">🏠</span> Home
+        </button>
+        <button class="nav-tab" data-page="frameworks" onclick="App.navigate('frameworks')">
+          <span class="tab-icon">📁</span> Frameworks
+        </button>
+        <button class="nav-tab" data-page="presentations" onclick="App.navigate('presentations')">
+          <span class="tab-icon">📊</span> Presentations
+        </button>
+        <button class="nav-tab" data-page="interview" onclick="App.navigate('interview')">
+          <span class="tab-icon">🎤</span> Interview
+        </button>
+        <button class="nav-tab" data-page="core-sales" onclick="App.navigate('core-sales')">
+          <span class="tab-icon">⚡</span> Core Sales
+        </button>
+      </div>
+      <div class="navbar-actions">
+        <div class="navbar-search-hint" onclick="App.navigate('home'); setTimeout(()=>document.getElementById('main-search').focus(),200)">
+          <span>🔍</span>
+          <span>Search</span>
+          <span class="kbd">⌘K</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ── HOME PAGE ── -->
+    <section class="page-content active" id="page-home">
+      <div class="home-hero">
+        <div class="home-tagline">Your Personal Sales Intelligence</div>
+        <h1 class="home-title">Everything You Need<br>To Close More Deals</h1>
+        <p class="home-subtitle">Search across frameworks, presentations, interview prep, and sales knowledge</p>
+
+        <div class="search-container" id="search-container">
+          <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input
+              type="text"
+              class="search-input"
+              id="main-search"
+              placeholder="Search or type / for commands (e.g., /interview/script)..."
+              autocomplete="off"
+              spellcheck="false"
+            >
+            <span class="search-shortcut">Try /interview/script, /objection</span>
+          </div>
+          <div class="search-dropdown" id="search-dropdown"></div>
+        </div>
+
+        <div class="quick-access">
+          <div class="quick-access-title">Quick Access</div>
+          <div class="quick-cards" style="grid-template-columns: repeat(5, 1fr);">
+            <div class="quick-card" onclick="App.navigate('frameworks')">
+              <div class="quick-card-icon">📁</div>
+              <div class="quick-card-label">Frameworks</div>
+              <div class="quick-card-count" id="stat-frameworks">— items</div>
+            </div>
+            <div class="quick-card" onclick="App.navigate('presentations')">
+              <div class="quick-card-icon">📊</div>
+              <div class="quick-card-label">Presentations</div>
+              <div class="quick-card-count" id="stat-presentations">— items</div>
+            </div>
+            <div class="quick-card" onclick="App.navigate('interview')">
+              <div class="quick-card-icon">🎤</div>
+              <div class="quick-card-label">Interview</div>
+              <div class="quick-card-count" id="stat-interview">— items</div>
+            </div>
+            <div class="quick-card" onclick="App.navigate('core-sales')">
+              <div class="quick-card-icon">⚡</div>
+              <div class="quick-card-label">Core Sales</div>
+              <div class="quick-card-count" id="stat-entries">— entries</div>
+            </div>
+            <div class="quick-card" onclick="App.navigate('core-sales'); setTimeout(()=>CoreSales.openAddEntry(),400)">
+              <div class="quick-card-icon">✍️</div>
+              <div class="quick-card-label">Add Entry</div>
+              <div class="quick-card-count">Quick add</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-bar" id="stats-bar">
+          <div class="stat-item">
+            <div class="stat-value" id="stat-frameworks-big">0</div>
+            <div class="stat-label">Frameworks</div>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <div class="stat-value" id="stat-presentations-big">0</div>
+            <div class="stat-label">Presentations</div>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <div class="stat-value" id="stat-interview-big">0</div>
+            <div class="stat-label">Interview Items</div>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <div class="stat-value" id="stat-entries-big">0</div>
+            <div class="stat-label">Sales Entries</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FRAMEWORKS PAGE ── -->
+    <section class="page-content" id="page-frameworks">
+      <div class="page-header">
+        <div class="page-header-left">
+          <h1 class="page-title">📁 Frameworks</h1>
+          <p class="page-subtitle">Your go-to frameworks, playbooks, and reference materials</p>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-primary" onclick="Frameworks.openAddModal()">
+            + Add Framework
+          </button>
+        </div>
+      </div>
+      <div class="filter-bar">
+        <button class="filter-chip active" data-filter="all" onclick="Frameworks.setFilter('all', this)">All</button>
+        <button class="filter-chip" data-filter="image" onclick="Frameworks.setFilter('image', this)">🖼️ Images</button>
+        <button class="filter-chip" data-filter="document" onclick="Frameworks.setFilter('document', this)">📄 Documents</button>
+        <button class="filter-chip" data-filter="sheet" onclick="Frameworks.setFilter('sheet', this)">📊 Sheets</button>
+        <button class="filter-chip" data-filter="link" onclick="Frameworks.setFilter('link', this)">🔗 Links</button>
+        <div class="filter-sep"></div>
+        <select class="sort-select" id="fw-sort" onchange="Frameworks.setSort(this.value)">
+          <option value="order">Custom Order</option>
+          <option value="name">Name A–Z</option>
+          <option value="type">By Type</option>
+          <option value="date">Newest First</option>
+        </select>
+      </div>
+      <div class="grid-container">
+        <div class="items-grid" id="frameworks-grid">
+          <div class="loading-overlay"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── PRESENTATIONS PAGE ── -->
+    <section class="page-content" id="page-presentations">
+      <div class="page-header">
+        <div class="page-header-left">
+          <h1 class="page-title">📊 Presentations</h1>
+          <p class="page-subtitle">Client pitch decks and sales presentations</p>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-primary" onclick="Presentations.openAddModal()">
+            + Add Presentation
+          </button>
+        </div>
+      </div>
+      <div class="presentations-tabs">
+        <button class="pres-tab active" data-cat="client" onclick="Presentations.setCategory('client', this)">
+          🤝 Client Decks
+        </button>
+        <button class="pres-tab" data-cat="interview" onclick="Presentations.setCategory('interview', this)">
+          🎤 Interview Decks
+        </button>
+      </div>
+      <div class="pres-content">
+        <div class="items-grid" id="presentations-grid">
+          <div class="loading-overlay"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── INTERVIEW PAGE ── -->
+    <section class="page-content" id="page-interview">
+      <div class="page-header">
+        <div class="page-header-left">
+          <h1 class="page-title">🎤 Interview Prep</h1>
+          <p class="page-subtitle">Organize your interview presentations, scripts, resumes, and prep documents</p>
+        </div>
+      </div>
+      <div class="core-sales-subtabs-wrapper">
+        <div class="core-sales-subtabs" id="interview-subtabs">
+          <div class="loading-overlay" style="padding:16px"><div class="spinner"></div></div>
+        </div>
+      </div>
+      <div class="cs-content">
+        <div class="cs-content-header">
+          <div class="cs-content-title" id="interview-active-title">—</div>
+          <button class="btn btn-primary btn-sm" onclick="Interview.openAddEntry()">+ Add Item</button>
+        </div>
+        <div class="cs-entries-grid" id="interview-entries-grid">
+          <div class="loading-overlay"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CORE SALES PAGE ── -->
+    <section class="page-content" id="page-core-sales">
+      <div class="page-header">
+        <div class="page-header-left">
+          <h1 class="page-title">⚡ Core Sales</h1>
+          <p class="page-subtitle">Your complete sales knowledge base — organized by topic</p>
+        </div>
+      </div>
+      <div class="core-sales-subtabs-wrapper">
+        <div class="core-sales-subtabs" id="cs-subtabs">
+          <div class="loading-overlay" style="padding:16px"><div class="spinner"></div></div>
+        </div>
+      </div>
+      <div class="cs-content">
+        <div class="cs-content-header">
+          <div class="cs-content-title" id="cs-active-title">—</div>
+          <button class="btn btn-primary btn-sm" onclick="CoreSales.openAddEntry()">+ Add Entry</button>
+        </div>
+        <div class="cs-entries-grid" id="cs-entries-grid">
+          <div class="loading-overlay"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── MODALS ── -->
+
+    <!-- Framework Modal -->
+    <div class="modal-backdrop" id="fw-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 class="modal-title" id="fw-modal-title">Add Framework</h2>
+          <button class="modal-close" onclick="Frameworks.closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Name *</label>
+            <input type="text" class="form-input" id="fw-name" placeholder="e.g., SPIN Selling Framework">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <input type="text" class="form-input" id="fw-desc" placeholder="Brief description...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Type *</label>
+            <select class="form-select" id="fw-type">
+              <option value="document">📄 Document / PDF</option>
+              <option value="sheet">📊 Sheet / Spreadsheet</option>
+              <option value="image">🖼️ Image</option>
+              <option value="link">🔗 Link / URL</option>
+              <option value="other">📌 Other</option>
+            </select>
+          </div>
+          <div class="form-group" id="fw-link-group" style="display:none">
+            <label class="form-label">URL</label>
+            <input type="url" class="form-input" id="fw-link" placeholder="https://...">
+          </div>
+          <div class="form-group" id="fw-upload-group">
+            <label class="form-label">File</label>
+            <div class="upload-zone" id="fw-upload-zone" onclick="document.getElementById('fw-file-input').click()">
+              <div class="upload-zone-icon">📎</div>
+              <div class="upload-zone-text">Click to upload or drag & drop</div>
+              <div class="upload-zone-sub">PDF, Images, Excel, PPT up to 50MB</div>
+            </div>
+            <input type="file" id="fw-file-input" style="display:none" accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.xlsx,.xls,.csv,.pptx,.ppt,.docx,.doc">
+            <div class="upload-progress" id="fw-upload-progress">
+              <div class="progress-bar"><div class="progress-fill" id="fw-progress-fill" style="width:0%"></div></div>
+            </div>
+            <div class="upload-preview" id="fw-upload-preview" style="display:none"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tags (comma separated)</label>
+            <input type="text" class="form-input" id="fw-tags" placeholder="e.g., SPIN, discovery, enterprise">
+          </div>
+          <input type="hidden" id="fw-file-path">
+          <input type="hidden" id="fw-original-filename">
+          <input type="hidden" id="fw-edit-id">
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="Frameworks.closeModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="Frameworks.save()">Save Framework</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Presentation Modal -->
+    <div class="modal-backdrop" id="pres-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 class="modal-title" id="pres-modal-title">Add Presentation</h2>
+          <button class="modal-close" onclick="Presentations.closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Name *</label>
+            <input type="text" class="form-input" id="pres-name" placeholder="e.g., Q1 Enterprise Pitch">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <input type="text" class="form-input" id="pres-desc" placeholder="Brief description...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category *</label>
+            <select class="form-select" id="pres-category">
+              <option value="client">🤝 Client</option>
+              <option value="interview">🎤 Interview</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">File</label>
+            <div class="upload-zone" id="pres-upload-zone" onclick="document.getElementById('pres-file-input').click()">
+              <div class="upload-zone-icon">📎</div>
+              <div class="upload-zone-text">Click to upload or drag & drop</div>
+              <div class="upload-zone-sub">PDF, PPT, Images up to 50MB</div>
+            </div>
+            <input type="file" id="pres-file-input" style="display:none" accept=".pdf,.pptx,.ppt,.png,.jpg,.jpeg,.key">
+            <div class="upload-progress" id="pres-upload-progress">
+              <div class="progress-bar"><div class="progress-fill" id="pres-progress-fill" style="width:0%"></div></div>
+            </div>
+            <div class="upload-preview" id="pres-upload-preview" style="display:none"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tags (comma separated)</label>
+            <input type="text" class="form-input" id="pres-tags" placeholder="e.g., Q1, enterprise, pitch">
+          </div>
+          <input type="hidden" id="pres-file-path">
+          <input type="hidden" id="pres-original-filename">
+          <input type="hidden" id="pres-edit-id">
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="Presentations.closeModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="Presentations.save()">Save Presentation</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Core Sales Entry Modal (With File & Link Attachment Options) -->
+    <div class="modal-backdrop" id="cs-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 class="modal-title" id="cs-modal-title">Add Entry</h2>
+          <button class="modal-close" onclick="CoreSales.closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Title *</label>
+            <input type="text" class="form-input" id="cs-entry-title" placeholder="e.g., Price Objection Reframe">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Content / Script / Notes</label>
+            <textarea class="form-textarea" id="cs-entry-content" rows="4" placeholder="Write your text content, notes, or response script..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Attachment Type</label>
+            <select class="form-select" id="cs-entry-type" onchange="CoreSales.handleTypeChange()">
+              <option value="text">📝 Text Only</option>
+              <option value="document">📄 Document / PDF</option>
+              <option value="sheet">📊 Sheet / Spreadsheet</option>
+              <option value="image">🖼️ Image</option>
+              <option value="link">🔗 Link / URL</option>
+            </select>
+          </div>
+          <div class="form-group" id="cs-link-group" style="display:none">
+            <label class="form-label">Link URL</label>
+            <input type="url" class="form-input" id="cs-link" placeholder="https://...">
+          </div>
+          <div class="form-group" id="cs-upload-group" style="display:none">
+            <label class="form-label">Attachment File</label>
+            <div class="upload-zone" id="cs-upload-zone" onclick="document.getElementById('cs-file-input').click()">
+              <div class="upload-zone-icon">📎</div>
+              <div class="upload-zone-text">Click to upload document/sheet/image</div>
+              <div class="upload-zone-sub">PDF, Excel, Images up to 50MB</div>
+            </div>
+            <input type="file" id="cs-file-input" style="display:none" accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.xlsx,.xls,.csv,.pptx,.ppt,.docx,.doc">
+            <div class="upload-progress" id="cs-upload-progress">
+              <div class="progress-bar"><div class="progress-fill" id="cs-progress-fill" style="width:0%"></div></div>
+            </div>
+            <div class="upload-preview" id="cs-upload-preview" style="display:none"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tags (comma separated)</label>
+            <input type="text" class="form-input" id="cs-entry-tags" placeholder="e.g., price, enterprise, objection">
+          </div>
+          <div class="form-group">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer" class="form-label">
+              <input type="checkbox" id="cs-entry-pinned" style="width:16px;height:16px;accent-color:var(--accent-amber)">
+              Pin this entry to top
+            </label>
+          </div>
+          <input type="hidden" id="cs-file-path">
+          <input type="hidden" id="cs-original-filename">
+          <input type="hidden" id="cs-entry-edit-id">
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="CoreSales.closeModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="CoreSales.saveEntry()">Save Entry</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interview Entry Modal -->
+    <div class="modal-backdrop" id="interview-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 class="modal-title" id="interview-modal-title">Add Interview Item</h2>
+          <button class="modal-close" onclick="Interview.closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Title *</label>
+            <input type="text" class="form-input" id="interview-entry-title" placeholder="e.g., Tell Me About Yourself Script">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Content / Script / Notes</label>
+            <textarea class="form-textarea" id="interview-entry-content" rows="4" placeholder="Write your pitch script, interview answers, or notes..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Format / Type</label>
+            <select class="form-select" id="interview-entry-type" onchange="Interview.handleTypeChange()">
+              <option value="text">📝 Text / Script</option>
+              <option value="document">📄 Document / Resume PDF</option>
+              <option value="sheet">📊 Sheet / Data</option>
+              <option value="image">🖼️ Image / Slide</option>
+              <option value="link">🔗 External Link</option>
+            </select>
+          </div>
+          <div class="form-group" id="interview-link-group" style="display:none">
+            <label class="form-label">Link URL</label>
+            <input type="url" class="form-input" id="interview-link" placeholder="https://...">
+          </div>
+          <div class="form-group" id="interview-upload-group" style="display:none">
+            <label class="form-label">Attachment File</label>
+            <div class="upload-zone" id="interview-upload-zone" onclick="document.getElementById('interview-file-input').click()">
+              <div class="upload-zone-icon">📎</div>
+              <div class="upload-zone-text">Click to upload document/resume/image</div>
+              <div class="upload-zone-sub">PDF, Word, Images, Excel up to 50MB</div>
+            </div>
+            <input type="file" id="interview-file-input" style="display:none" accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.xlsx,.xls,.csv,.pptx,.ppt,.docx,.doc">
+            <div class="upload-progress" id="interview-upload-progress">
+              <div class="progress-bar"><div class="progress-fill" id="interview-progress-fill" style="width:0%"></div></div>
+            </div>
+            <div class="upload-preview" id="interview-upload-preview" style="display:none"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tags (comma separated)</label>
+            <input type="text" class="form-input" id="interview-entry-tags" placeholder="e.g., script, resume, VP pitch">
+          </div>
+          <div class="form-group">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer" class="form-label">
+              <input type="checkbox" id="interview-entry-pinned" style="width:16px;height:16px;accent-color:var(--accent-amber)">
+              Pin this item
+            </label>
+          </div>
+          <input type="hidden" id="interview-file-path">
+          <input type="hidden" id="interview-original-filename">
+          <input type="hidden" id="interview-entry-edit-id">
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="Interview.closeModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="Interview.saveEntry()">Save Item</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Core Sales Add Tab Modal -->
+    <div class="modal-backdrop" id="add-tab-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 class="modal-title">Add Custom Sales Tab</h2>
+          <button class="modal-close" onclick="CoreSales.closeAddTabModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Tab Name *</label>
+            <input type="text" class="form-input" id="new-tab-name" placeholder="e.g., Closing Techniques">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Icon (emoji)</label>
+            <input type="text" class="form-input" id="new-tab-icon" placeholder="🎯" maxlength="4">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="CoreSales.closeAddTabModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="CoreSales.saveNewTab()">Create Tab</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interview Add Tab Modal -->
+    <div class="modal-backdrop" id="add-interview-tab-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 class="modal-title">Add Custom Interview Tab</h2>
+          <button class="modal-close" onclick="Interview.closeAddTabModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Tab Name *</label>
+            <input type="text" class="form-input" id="new-itab-name" placeholder="e.g., Case Studies">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Icon (emoji)</label>
+            <input type="text" class="form-input" id="new-itab-icon" placeholder="💼" maxlength="4">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="Interview.closeAddTabModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="Interview.saveNewTab()">Create Tab</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generic Item Preview Modal -->
+    <div class="modal-backdrop" id="preview-modal">
+      <div class="modal" style="max-width: 680px;">
+        <div class="modal-header">
+          <h2 class="modal-title" id="preview-modal-title">Item Preview</h2>
+          <button class="modal-close" onclick="Modal.close('preview-modal')">✕</button>
+        </div>
+        <div class="modal-body" id="preview-modal-body">
+          <!-- Dynamic preview content inserted here -->
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" onclick="Modal.close('preview-modal')">Done</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="/js/app.js"></script>
+  <script src="/js/search.js"></script>
+  <script src="/js/frameworks.js"></script>
+  <script src="/js/presentations.js"></script>
+  <script src="/js/interview.js"></script>
+  <script src="/js/core-sales.js"></script>
+</body>
+</html>

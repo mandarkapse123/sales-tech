@@ -1,0 +1,18 @@
+# Node dependencies
+node_modules/
+npm-debug.log*
+
+# Database & Storage
+backend/salesos.db
+backend/salesos.db-wal
+backend/salesos.db-shm
+
+# Uploads (keep directory structure)
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# System & IDE
+.DS_Store
+.env
+.vscode/
+.idea/
