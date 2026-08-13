@@ -137,6 +137,36 @@ const Utils = {
     if (!tags || !tags.length) return '';
     return `<div class="tags">${tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>`;
   },
+  openInlineFile(fileUrl, title = 'File Preview') {
+    if (!fileUrl) return;
+    if (fileUrl.startsWith('data:')) {
+      try {
+        const parts = fileUrl.split(';base64,');
+        const contentType = parts[0].replace('data:', '');
+        const raw = window.atob(parts[1]);
+        const uInt8Array = new Uint8Array(raw.length);
+        for (let i = 0; i < raw.length; ++i) {
+          uInt8Array[i] = raw.charCodeAt(i);
+        }
+        const blob = new Blob([uInt8Array], { type: contentType });
+        const blobUrl = URL.createObjectURL(blob);
+        
+        if (contentType.startsWith('image/')) {
+          const win = window.open('', '_blank');
+          if (win) {
+            win.document.write(`<!DOCTYPE html><html><head><title>${title}</title><style>body{margin:0;background:#05070a;display:flex;align-items:center;justify-content:center;height:100vh;overflow:hidden}img{max-width:100vw;max-height:100vh;object-fit:contain}</style></head><body><img src="${blobUrl}"></body></html>`);
+            win.document.close();
+            return;
+          }
+        }
+        window.open(blobUrl, '_blank');
+      } catch (e) {
+        window.open(fileUrl, '_blank');
+      }
+    } else {
+      window.open(fileUrl, '_blank');
+    }
+  },
   emptyState(icon, title, subtitle) {
     return `<div class="empty-state">
       <div class="empty-state-icon">${icon}</div>

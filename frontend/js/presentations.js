@@ -52,7 +52,7 @@ const Presentations = {
             <span class="item-card-date">${Utils.formatDate(item.created_at)}</span>
             <div class="item-card-actions" onclick="event.stopPropagation()">
               <button class="item-card-action" title="Preview Presentation" onclick="Presentations.openPreview('${item.id}')">👁️</button>
-              ${item.file_path ? `<button class="item-card-action" title="Open file" onclick="window.open('${item.file_path}','_blank')">↗</button>` : ''}
+              ${item.file_path ? `<button class="item-card-action" title="Open file" onclick="Utils.openInlineFile('${item.file_path}','${item.name.replace(/'/g, "\\'")}')">↗</button>` : ''}
               <button class="item-card-action" title="Edit" onclick="Presentations.openEditModal('${item.id}')">✏️</button>
               <button class="item-card-action delete" title="Delete" onclick="Presentations.delete('${item.id}','${item.name.replace(/'/g, "\\'")}')">🗑</button>
             </div>

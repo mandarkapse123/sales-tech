@@ -45,7 +45,7 @@ const SalesImages = {
             <span class="item-card-date">${Utils.formatDate(item.created_at)}</span>
             <div class="item-card-actions" onclick="event.stopPropagation()">
               <button class="item-card-action" title="Present Mode" onclick="SalesImages.openPreview('${item.id}')">🖥️</button>
-              <button class="item-card-action" title="Open Fullscreen in New Tab" onclick="window.open('${item.file_path}', '_blank')">↗</button>
+              <button class="item-card-action" title="Open Fullscreen in New Tab" onclick="Utils.openInlineFile('${item.file_path}', '${item.title.replace(/'/g, "\\'")}')">↗</button>
               <button class="item-card-action" title="Edit" onclick="SalesImages.openEditModal('${item.id}')">✏️</button>
               <button class="item-card-action delete" title="Delete" onclick="SalesImages.delete('${item.id}', '${item.title.replace(/'/g, "\\'")}')">🗑</button>
             </div>

@@ -10,6 +10,16 @@ if (!fs.existsSync(DB_DIR)) {
   fs.mkdirSync(DB_DIR, { recursive: true });
 }
 
+// Copy seed database to /tmp if starting up fresh on Vercel
+if (process.env.VERCEL && !fs.existsSync(DB_PATH)) {
+  const repoDbPath = path.join(__dirname, 'salesos.db');
+  if (fs.existsSync(repoDbPath)) {
+    try {
+      fs.copyFileSync(repoDbPath, DB_PATH);
+    } catch (e) {}
+  }
+}
+
 const db = new Database(DB_PATH);
 
 // Enable WAL mode for better performance (WAL is ignored on /tmp if single connection, fallback to DELETE)
